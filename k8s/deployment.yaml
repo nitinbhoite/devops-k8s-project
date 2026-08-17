@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: devops-demo
-          image: ACCOUNT_ID.dkr.ecr.ap-south-1.amazonaws.com/devops-k8s-demo:1.0
+          image: 248894199946.dkr.ecr.ap-south-1.amazonaws.com/devops-k8s-demo:1.0
 
           ports:
             - containerPort: 80
