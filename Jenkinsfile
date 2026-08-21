@@ -1,6 +1,7 @@
 pipeline {
     agent any
     environment {
+        PATH = "/usr/bin:${env.PATH}"
         AWS_REGION = 'ap-south-1'
         ECR_REPOSITORY = 'devops-k8s-demo'
         IMAGE_TAG = "${BUILD_NUMBER}"
