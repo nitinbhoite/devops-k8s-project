@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         AWS_REGION = 'ap-south-1'
-        ECR_REPO = 'devops-k8s-demo'
+        ECR_REPOSITORY = 'devops-k8s-demo'
         IMAGE_TAG = "${BUILD_NUMBER}"
     }
     stages {
@@ -49,6 +49,8 @@ pipeline {
                     AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
 
                     ECR_URI=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}
+
+                    echo "ECR URI: ${ECR_URI}"
 
                     docker tag devops-k8s-demo:${BUILD_NUMBER} ${ECR_URI}:${BUILD_NUMBER}
 
