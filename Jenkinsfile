@@ -32,23 +32,27 @@ pipeline {
         stage('ECR Login') {
             steps {
                 sh '''
-                    aws ecr get-login-password \
-                    --region ${AWS_REGION} \
-                    | docker login \
-                    --username AWS \
-                    --password-stdin \
-                    ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+                    AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+
+                    echo "AWS Account: $AWS_ACCOUNT_ID"
+                    echo "AWS Region: ${AWS_REGION}"
+
+                    aws ecr get-login-password --region ${AWS_REGION} |
+                    docker login --username AWS \
+                    --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
                 '''
             }
         }
         stage('Docker Push') {
             steps {
                 sh '''
-                    docker tag \
-                    ${ECR_REPO}:${IMAGE_TAG} \
-                    ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}
-                    docker push \
-                    ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}
+                    AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+
+                    ECR_URI=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}
+
+                    docker tag devops-k8s-demo:${BUILD_NUMBER} ${ECR_URI}:${BUILD_NUMBER}
+
+                    docker push ${ECR_URI}:${BUILD_NUMBER}
                 '''
             }
         }
