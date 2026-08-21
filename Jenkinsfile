@@ -25,7 +25,7 @@ pipeline {
             steps {
                 sh '''
                     docker build \
-                    -t ${ECR_REPO}:${IMAGE_TAG} .
+                    -t ${ECR_REPOSITORY}:${IMAGE_TAG} .
                 '''
             }
         }
